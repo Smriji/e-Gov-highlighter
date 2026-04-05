@@ -1,0 +1,25 @@
+{
+  "manifest_version": 3,
+  "name": "e-Gov 法令ハイライト",
+  "version": "1.0",
+  "description": "e-Gov法令検索の条文を読みやすくするために、キーワード、括弧、定義語を自動的に装飾します。",
+  "permissions": [
+    "storage"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "*://laws.e-gov.go.jp/*"
+      ],
+      "js": [
+        "config.js",
+        "brackets.js",
+        "definitions.js",
+        "keywords.js",
+        "main.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "options_page": "options.html"
+}
