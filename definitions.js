@@ -40,7 +40,7 @@ function highlightDefinitions(rootElement, definitionSettings) {
 
         // 定義の候補を抽出する正規表現パターン
         // 百号以上の定義も対応 千号を超える例は見ないので対応しない
-        const listMatch = normalizedText.match(/^([一二三四五六七八九十百]+(?:の[一二三四五六七八九十]+)*|[ア-ン])　(.+?)　.*いう。$/);
+        const listMatch = normalizedText.match(/^([一二三四五六七八九十百]+(?:の[一二三四五六七八九十]+)*|[ア-ン])　(.+?)　.*?いう。(?=\s*(?:$|[ア-ン]|（))/);
         
         if (listMatch) {
             let term = listMatch[2].replace(/[「」]/g, '').replace(/（[^）]+）/g, '').trim();
