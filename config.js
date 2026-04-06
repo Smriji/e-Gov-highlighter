@@ -40,6 +40,7 @@ const DEFAULT_SETTINGS = {
     }
 };
 
+// ユーザー設定とデフォルト設定をマージする関数
 function mergeSettings(userSettings) {
     if (!userSettings || typeof userSettings !== 'object') {
         return DEFAULT_SETTINGS;

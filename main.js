@@ -41,6 +41,8 @@ function waitForContentAndApply(settings) {
 function applyHighlights(settings) {
     const rootElement = document;
 
+    // まず括弧のハイライトを適用する
+    // 設定によっては括弧内のハイライトを行わない場合もあるため、順番を考慮
     if (settings.brackets.enabled) {
         highlightBrackets(rootElement, settings.brackets);
     }

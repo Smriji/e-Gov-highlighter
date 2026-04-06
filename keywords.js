@@ -50,9 +50,13 @@ function highlightKeywords(rootElement, keywordSettings) {
                 acceptNode: function(node) {
                     const parent = node.parentElement;
                     if (!parent) return NodeFilter.FILTER_ACCEPT;
+
+                    // 定義語の場合にはスキップ
                     if (parent.classList.contains("egov-definition") || parent.classList.contains("egov-highlight")) {
                         return NodeFilter.FILTER_REJECT;
                     }
+
+                    // 括弧内のハイライトを行わない設定の場合、括弧内のテキストノードをスキップ
                     if (!keywordSettings.highlightInsideBrackets && parent.classList.contains("egov-bracket")) {
                         return NodeFilter.FILTER_REJECT;
                     }
