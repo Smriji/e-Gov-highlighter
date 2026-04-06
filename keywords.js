@@ -14,6 +14,7 @@ function highlightKeywords(rootElement, keywordSettings) {
     const termsPattern = escapedWords.join('|');
     const testRegex = new RegExp(`(${termsPattern})`);
 
+    // ハイライトの対象となる要素
     const containerSelectors = [
         '[class*="preamble" i]', '[class*="mainprovision" i]', '[class*="supplprovision" i]',
         '[class*="appdx" i]', '[class*="part" i]', '[class*="chapter" i]', '[class*="section" i]'
@@ -21,6 +22,7 @@ function highlightKeywords(rootElement, keywordSettings) {
     const containers = rootElement.querySelectorAll(containerSelectors);
     const searchRoots = containers.length > 0 ? Array.from(containers) : [rootElement];
 
+    // ハイライトの対象をさらに絞る
     const targetSelectors = [
         '[class*="articletitle" i]', '[class*="paragraph" i]', '[class*="item" i]',
         '[class*="sentence" i]', '[class*="portion" i]', '[class*="column" i]',
@@ -33,7 +35,9 @@ function highlightKeywords(rootElement, keywordSettings) {
 
     const elementsSet = new Set(rawElements);
     const targetElements = rawElements.filter(el => {
+        // 目次内の要素は除外する
         if (el.closest('[id*="TOC"]')) return false;
+        // 自身が他の対象要素の子孫であれば除外する
         let parent = el.parentElement;
         while (parent && parent !== document) {
             if (elementsSet.has(parent)) return false;
@@ -66,6 +70,7 @@ function highlightKeywords(rootElement, keywordSettings) {
             false
         );
 
+        // ノードを収集する
         const nodesToReplace = [];
         let node;
         while ((node = walker.nextNode())) {
@@ -85,9 +90,10 @@ function highlightKeywords(rootElement, keywordSettings) {
                     fragment.appendChild(document.createTextNode(textNode.nodeValue.substring(lastIndex, match.index)));
                 }
 
-                const word = match[0];
+                const word = match[0]; // マッチしたキーワード
                 const setting = settingsMap.get(word);
 
+                // ハイライト用の span タグを作成
                 const span = document.createElement("span");
                 span.className = "egov-highlight";
                 span.textContent = word;
