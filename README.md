@@ -34,7 +34,7 @@ e-Gov 法令検索 "laws.e-gov.go.jp" の条文を読みやすくするために
 
 現在、Chrome ウェブストアには公開されていません。以下の手順でローカルから読み込んで使用してください。
 
-1. このリポジトリをクローン `git clone https://github.com/Smriji/e-Gov-highlighter.git` するか、必要なファイルを個別にダウンロードして任意のフォルダに展開します。
+1. このリポジトリをクローン `git clone https://github.com/Smriji/e-Gov-highlighter.git` するか、必要なファイルをダウンロードして任意のフォルダに展開します。
 
 2. Google Chrome を開き、アドレスバーに **`chrome://extensions/`** と入力して拡張機能の管理画面を開きます。
 
@@ -45,6 +45,8 @@ e-Gov 法令検索 "laws.e-gov.go.jp" の条文を読みやすくするために
 5. 手順 1 で展開したフォルダ（**manifest.json** が含まれているフォルダ）を選択します。
 
 インストール後、e-Gov 法令検索のページを開くと自動的に装飾が適用されます。拡張機能のアイコンを右クリックし、**オプション** を選択すると設定画面が開きます。
+
+Microsoft Edge でも **`edge://extensions/`** からほぼ同様の手順でインストール可能です。
 
 ## 設定のエクスポートとインポート
 
