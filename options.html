@@ -213,6 +213,9 @@
         
         <div id="section-keywords" class="section active">
             <h2>キーワード設定</h2>
+            <p>ハイライトするキーワードを追加・編集できます。<br>
+            設定された各キーワードについて、チェックボックスを操作して有効/無効を切り替えることができます。<br>
+            キーワードは長いものから順に処理されるため、"その他の" と "その他" を区別することができます。</p>
             <div class="setting-group">
                 <label>
                     <input type="checkbox" id="kw-inside-brackets"> 括弧内のキーワードもハイライトする
@@ -226,6 +229,8 @@
 
         <div id="section-brackets" class="section">
             <h2>括弧の設定</h2>
+            <p>括弧をグレーアウト・網掛けするかどうかを設定できます。<br>
+            括弧は最優先で処理されるため、括弧内にキーワードや定義語があっても影響を受けません。</p>
             <div class="setting-group">
                 <label>
                     <input type="checkbox" id="br-enabled"> 括弧をグレーアウト・網掛けする
@@ -253,6 +258,9 @@
 
         <div id="section-definitions" class="section">
             <h2>定義語の設定</h2>
+            <p>定義語のハイライト方法を設定できます。<br>
+            "以下「○○」という"、"「○○」とは……という" という形式のほか、"各号に定めるところによる" の形式に対応しています。<br>
+            "以下この条において" などの適用範囲の制限がある定義には対応していません。</p>
             <div class="setting-group">
                 <label>
                     <input type="checkbox" id="def-enabled"> 定義語をハイライトする
@@ -312,7 +320,8 @@
         <div id="section-advanced" class="section">
             <h2>詳細設定 / データ管理 (JSON)</h2>
             <div class="setting-group">
-                <p>設定データを直接編集・バックアップできます。変更後は保存ボタンを押してください。</p>
+                <p>設定データを直接編集・バックアップできます。変更後は保存ボタンを押してください。<br>
+                バックアップファイルの設定を反映させたい場合には、JSON のテキストを貼り付けてください。</p>
                 <textarea id="json-editor"></textarea>
                 <div style="margin-top: 15px;">
                     <button id="save-json-btn" class="button-primary">JSONを保存</button>
