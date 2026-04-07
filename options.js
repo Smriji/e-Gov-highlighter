@@ -1,7 +1,5 @@
-// --- 1. デフォルト設定とマージ処理 (main.js と同じロジック) ---
-// config.js から DEFAULT_SETTINGS と mergeSettings をインポートして使用
-
-// --- 2. タブの切り替え処理 ---
+// options.html において config.js を先に読み込んでおく必要がある
+// --- 1. タブの切り替え処理 ---
 document.querySelectorAll('.menu-item').forEach(item => {
     item.addEventListener('click', function() {
         document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
@@ -11,7 +9,7 @@ document.querySelectorAll('.menu-item').forEach(item => {
     });
 });
 
-// --- 3. カラーピッカーとテキスト入力の連動 ---
+// --- 2. カラーピッカーとテキスト入力の連動 ---
 function bindColorInputs(pickerElement, textElement, clearButton) {
     pickerElement.addEventListener('input', (e) => {
         textElement.value = e.target.value;
@@ -31,10 +29,8 @@ function bindColorInputs(pickerElement, textElement, clearButton) {
             textElement.value = "transparent";
             pickerElement.value = "#ffffff"; // カラーピッカーは透明を選べないため、見た目上は白にする
             
-            // 重要：まず 'input' を発火させて内部の変数 (kw.backgroundColor 等) を更新し、
-            // その後 'change' を発火させてオートセーブを動かす
+            // input を発火させて内部の変数 (kw.backgroundColor 等) を更新
             textElement.dispatchEvent(new Event('input', { bubbles: true }));
-            textElement.dispatchEvent(new Event('change', { bubbles: true }));
         });
     }
 }
@@ -55,7 +51,7 @@ function updateColorPickerUI(pickerElement, textElement, colorValue) {
     }
 }
 
-// --- 4. キーワードリストの動的生成 ---
+// --- 3. キーワードリストの動的生成 ---
 let currentKeywords = [];
 
 function renderKeywordList() {
@@ -130,8 +126,6 @@ function renderKeywordList() {
         delBtn.addEventListener('click', () => {
             currentKeywords.splice(index, 1);
             renderKeywordList();
-            // 削除時にもオートセーブをトリガー
-            document.querySelector('.content').dispatchEvent(new Event('change', { bubbles: true }));
         });
 
         // 結合して追加（tcClear は存在しないため append から外しています）
@@ -146,7 +140,7 @@ document.getElementById('add-keyword-btn').addEventListener('click', () => {
 });
 
 
-// --- 5. 設定の読み込みとUIへの反映 ---
+// --- 4. 設定の読み込みとUIへの反映 ---
 function loadSettingsToUI(settings) {
     // JSONエディタの更新
     document.getElementById('json-editor').value = JSON.stringify(settings, null, 2);
@@ -172,7 +166,7 @@ function loadSettingsToUI(settings) {
     updateColorPickerUI(document.getElementById('def-underline-color-picker'), document.getElementById('def-underline-color'), settings.definitions.underlineColor);
 }
 
-// --- 6. UIから設定を収集して保存 ---
+// --- 5. UIから設定を収集して保存 ---
 function gatherSettingsFromUI() {
     return {
         keywords: {
@@ -200,31 +194,14 @@ function gatherSettingsFromUI() {
     };
 }
 
-function saveSettings(settingsObj) {
-    const finalSettings = mergeSettings(settingsObj); // 保存前にも念のためマージして完全な形にする
-    chrome.storage.sync.set({ eGovUserSettings: finalSettings }, () => {
-        // 保存成功したら、UI全体を最新の状態で再描画する
-        loadSettingsToUI(finalSettings);
-        
-        // 保存しましたメッセージを表示
-        const msg = document.getElementById('save-message');
-        msg.style.display = 'block';
-        setTimeout(() => msg.style.display = 'none', 3000);
-    });
-}
-
-// --- 7. イベントリスナー（保存・初期化など） ---
-/**
- * カラーコードが有効かチェックする (16進数 6桁 or "transparent")
- */
+// --- 6. 有効性確認 ---
+// カラーコードが有効かチェックする (16進数 6桁 or "transparent")
 function isValidColor(code) {
     return code === "transparent" || /^#[0-9A-F]{6}$/i.test(code);
 }
 
-/**
- * 設定オブジェクト全体のバリデーションを行う
- * @returns {string[]} エラーメッセージの配列。エラーがなければ空配列。
- */
+// 設定オブジェクト全体のバリデーションを行う
+// @returns {string[]} エラーメッセージの配列。エラーがなければ空配列。
 function validateSettings(settings) {
     const errors = [];
 
@@ -240,7 +217,7 @@ function validateSettings(settings) {
     const minLen = settings.definitions.minLength;
     const maxLen = settings.definitions.maxLength;
 
-    // 1. 個別の数値妥当性チェック
+    // 3. 個別の数値妥当性チェック
     // 最小文字数は 0 の場合には 1 と同じ結果になるため、0 以上であれば許容する
     if (isNaN(minLen) || minLen < 0) {
         errors.push("定義語の最小文字数には 0 以上の数値を入力してください。");
@@ -251,7 +228,7 @@ function validateSettings(settings) {
         errors.push("定義語の最大文字数には 1 以上の数値を入力してください。");
     }
 
-    // 2. 相関チェック (min <= max)
+    // 4. 相関チェック (min <= max)
     // 両方が数値である場合のみチェックを実行
     if (!isNaN(minLen) && !isNaN(maxLen)) {
         if (minLen > maxLen) {
@@ -259,7 +236,7 @@ function validateSettings(settings) {
         }
     }
 
-    // 3. キーワードの設定チェック
+    // 5. キーワードの設定チェック
     settings.keywords.items.forEach((item, index) => {
         const label = item.word ? `"${item.word}"` : `項目 ${index + 1}`;
         if (!isValidColor(item.textColor)) errors.push(`キーワード ${label} の文字色が正しくありません。`);
@@ -269,6 +246,7 @@ function validateSettings(settings) {
     return errors;
 }
 
+// --- 7. 保存処理の実装 ---
 // 保存メッセージを表示する共通関数
 function showSaveSuccess() {
     const msg = document.getElementById('global-save-message');
@@ -277,9 +255,16 @@ function showSaveSuccess() {
 }
 
 // 保存処理の本体
+function saveSettings(settingsObj) {
+    // mergeSettings は config.js で定義されている
+    const finalSettings = mergeSettings(settingsObj); // 保存前にも念のためマージして完全な形にする
+    chrome.storage.sync.set({ eGovUserSettings: finalSettings }, () => {
+        // 保存成功したら、UI全体を最新の状態で再描画する
+        loadSettingsToUI(finalSettings);
+    });
+}
 
-// --- 7. イベントリスナー部分の performSave を修正 ---
-
+// バリデーションと保存をまとめた関数（サイドバーと詳細タブの両方から呼び出す）
 function performSave() {
     let settingsToSave;
 
@@ -312,21 +297,13 @@ function performSave() {
 document.getElementById('global-save-btn').addEventListener('click', performSave);
 
 // 詳細タブ：JSONを保存（サイドバーと同じ保存処理を実行）
-document.getElementById('save-json-btn').addEventListener('click', performSave);
+if (document.getElementById('save-json-btn')) {
+    document.getElementById('save-json-btn').addEventListener('click', performSave);
+}
 
-// サイドバー：変更を破棄（ストレージから再読み込み）
-document.getElementById('global-discard-btn').addEventListener('click', () => {
-    if (confirm("保存されていない変更は破棄されます。よろしいですか？")) {
-        chrome.storage.sync.get(['eGovUserSettings'], function(result) {
-            const settings = mergeSettings(result.eGovUserSettings);
-            loadSettingsToUI(settings);
-        });
-    }
-});
-
-// デフォルトに戻す
+// --- 8. デフォルトに戻す処理 ---
 function performReset() {
-    if (confirm("すべての設定を初期状態（デフォルト）に戻します。よろしいですか？")) {
+ if (confirm("すべての設定を初期状態（デフォルト）に戻します。よろしいですか？")) {
         saveSettings(DEFAULT_SETTINGS);
         showSaveSuccess();
     }
@@ -335,36 +312,44 @@ function performReset() {
 // サイドバー：デフォルトに戻す
 document.getElementById('global-reset-btn').addEventListener('click', performReset);
 
-// 詳細タブ：デフォルトに戻す（既存のリスナーを書き換えまたは共通関数呼び出しに）
-document.getElementById('reset-btn').addEventListener('click', performReset);
+// 詳細タブ: デフォルトに戻す（サイドバーと同じリセット処理を実行）
+if (document.getElementById('reset-btn')) {
+    document.getElementById('reset-btn').addEventListener('click', performReset);
+}
 
-// 詳細タブ：JSONをファイルとしてダウンロード
-document.getElementById('download-json-btn').addEventListener('click', () => {
-    const jsonText = document.getElementById('json-editor').value;
-    
-    // JSONのバリデーション（任意ですが、壊れたJSONを保存しないために推奨）
-    try {
-        JSON.parse(jsonText);
-    } catch (e) {
-        alert("JSONの形式が正しくないため、保存できません。");
-        return;
+// --- 9. 変更を保存せずに最後に保存された状態に戻す ---
+document.getElementById('global-discard-btn').addEventListener('click', () => {
+    if (confirm("保存されていない変更は破棄されます。最後に保存された状態に戻しますか？")) {
+        chrome.storage.sync.get(['eGovUserSettings'], function(result) {
+            const settings = mergeSettings(result.eGovUserSettings);
+            loadSettingsToUI(settings);
+        });
     }
-
-    const blob = new Blob([jsonText], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    
-    // ファイル名は「egov-settings_日付.json」のような形式に
-    const date = new Date().toISOString().split('T')[0];
-    a.download = `egov-highlighter-settings_${date}.json`;
-    a.href = url;
-    a.click();
-    
-    // メモリ解放
-    URL.revokeObjectURL(url);
 });
+        
+// --- 10. JSONをファイルとして保存する処理 ---
+if (document.getElementById('download-json-btn')) {
+    document.getElementById('download-json-btn').addEventListener('click', () => {
+        const jsonText = document.getElementById('json-editor').value;
+        try {
+            JSON.parse(jsonText);
+        } catch (e) {
+            alert("JSONの形式が正しくないため、保存できません。");
+            return;
+        }
+        const blob = new Blob([jsonText], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        // ファイル名は「egov-settings_日付.json」のような形式に
+        const date = new Date().toISOString().split('T')[0];
+        a.download = `egov-highlighter-settings_${date}.json`;
+        a.href = url;
+        a.click();
+        URL.revokeObjectURL(url);
+    });
+}
 
-// --- 8. 初期読み込み処理 ---
+// --- 11. 初期読み込み処理 ---
 document.addEventListener('DOMContentLoaded', () => {
     chrome.storage.sync.get(['eGovUserSettings'], function(result) {
         const settings = mergeSettings(result.eGovUserSettings);
