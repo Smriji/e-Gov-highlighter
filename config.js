@@ -38,35 +38,38 @@ const DEFAULT_SETTINGS = {
         backgroundColor: "#E3F2FD",
         underlineStyle: "dashed",
         underlineColor: "#1976D2"
+    },
+    custumCss: {
+        RemoveLinkDecoration: false,
+        FullScreen: false
     }
 };
 
 // ユーザー設定とデフォルト設定をマージする関数
 function mergeSettings(userSettings) {
-    if (!userSettings || typeof userSettings !== 'object') {
-        return DEFAULT_SETTINGS;
-    }
-    const defaultKw = DEFAULT_SETTINGS.keywords;
-    const userKw = userSettings.keywords || {};
-    let mergedKeywordItems = defaultKw.items;
-    
-    if (Array.isArray(userKw.items)) {
-        mergedKeywordItems = userKw.items.map(kw => {
-            return { ...DEFAULT_KEYWORD_PROPS, ...kw };
-        });
-    }
-
-    const mergedKeywords = {
-        highlightInsideBrackets: userKw.highlightInsideBrackets !== undefined ? userKw.highlightInsideBrackets : defaultKw.highlightInsideBrackets,
-        items: mergedKeywordItems
-    };
-
-    const mergedBrackets = { ...DEFAULT_SETTINGS.brackets, ...(userSettings.brackets || {}) };
-    const mergedDefinitions = { ...DEFAULT_SETTINGS.definitions, ...(userSettings.definitions || {}) };
+    if (!userSettings) return JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
 
     return {
-        keywords: mergedKeywords,
-        brackets: mergedBrackets,
-        definitions: mergedDefinitions
+        ...DEFAULT_SETTINGS,
+        ...userSettings,
+        keywords: {
+            ...DEFAULT_SETTINGS.keywords,
+            ...(userSettings.keywords || {}),
+            items: userSettings.keywords && userSettings.keywords.items
+                ? userSettings.keywords.items
+                : DEFAULT_SETTINGS.keywords.items
+        },
+        brackets: {
+            ...DEFAULT_SETTINGS.brackets,
+            ...(userSettings.brackets || {})
+        },
+        definitions: {
+            ...DEFAULT_SETTINGS.definitions,
+            ...(userSettings.definitions || {})
+        },
+        custumCss: {
+            ...DEFAULT_SETTINGS.custumCss,
+            ...(userSettings.custumCss || {})
+        }
     };
 }

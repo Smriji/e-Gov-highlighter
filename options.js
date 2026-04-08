@@ -164,7 +164,21 @@ function loadSettingsToUI(settings) {
     updateColorPickerUI(document.getElementById('def-bg-color-picker'), document.getElementById('def-bg-color'), settings.definitions.backgroundColor);
     document.getElementById('def-underline-style').value = settings.definitions.underlineStyle;
     updateColorPickerUI(document.getElementById('def-underline-color-picker'), document.getElementById('def-underline-color'), settings.definitions.underlineColor);
+
+    // カスタムCSS
+    document.getElementById('link-remove-decoration').checked = settings.custumCss.RemoveLinkDecoration;
+    document.getElementById('custom-fullscreen').checked = settings.custumCss.FullScreen;
 }
+
+// 詳細タブのチェックボックス変更時にJSONエディタを更新する関数
+function updateJsonEditorFromUI() {
+    const settings = gatherSettingsFromUI();
+    document.getElementById('json-editor').value = JSON.stringify(settings, null, 2);
+}
+
+// 詳細タブのチェックボックスにイベントリスナーを追加
+document.getElementById('link-remove-decoration').addEventListener('change', updateJsonEditorFromUI);
+document.getElementById('custom-fullscreen').addEventListener('change', updateJsonEditorFromUI);
 
 // --- 5. UIから設定を収集して保存 ---
 function gatherSettingsFromUI() {
@@ -190,6 +204,10 @@ function gatherSettingsFromUI() {
             backgroundColor: document.getElementById('def-bg-color').value,
             underlineStyle: document.getElementById('def-underline-style').value,
             underlineColor: document.getElementById('def-underline-color').value
+        },
+        custumCss: {
+            RemoveLinkDecoration: document.getElementById('link-remove-decoration').checked,
+            FullScreen: document.getElementById('custom-fullscreen').checked
         }
     };
 }

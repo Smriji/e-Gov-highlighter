@@ -3,11 +3,46 @@ function initializeExtension() {
     if (typeof chrome !== 'undefined' && chrome.storage) {
         chrome.storage.sync.get(['eGovUserSettings'], function(result) {
             const settings = mergeSettings(result.eGovUserSettings);
+            applyStyleSheet(settings);
             waitForContentAndApply(settings);
         });
     } else {
         // ローカルでのテスト用フォールバック
+        applyStyleSheet(DEFAULT_SETTINGS);
         waitForContentAndApply(DEFAULT_SETTINGS);
+    }
+}
+
+function applyStyleSheet(settings) {
+    let css = '';
+
+    if (settings.custumCss && settings.custumCss.RemoveLinkDecoration) {
+        css += `
+            div[class*="paragraph" i] a,
+            div[class*="item" i] a,
+            div[class*="articletitle" i] a,
+            td a, th a {
+                color: inherit !important;
+                text-decoration: none !important;
+            }`;
+    }
+    if (settings.custumCss && settings.custumCss.FullScreen) {
+        css += `
+            :root {
+                --bar-height: 0 !important;
+            }
+            #rootbar, #titlebar, #sidebar, .revisionmeta, #provisionoptions, .toolbar {
+                display: none !important;
+            }
+            .revision {
+                margin-left: 0 !important;
+            }`;
+    }
+
+    if (css) {
+        const style = document.createElement('style');
+        style.textContent = css;
+        document.head.appendChild(style);
     }
 }
 
