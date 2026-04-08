@@ -59,29 +59,18 @@ function highlightDefinitions(rootElement, definitionSettings) {
     const testRegex = new RegExp(`(${termsPattern})`);
 
     // 処理を行う対象のセレクタを定義
-    const containerSelectors = [
-        '[class*="preamble" i]', '[class*="mainprovision" i]', '[class*="supplprovision" i]',
-        '[class*="appdx" i]', '[class*="part" i]', '[class*="chapter" i]', '[class*="section" i]'
-    ].join(', ');
-    const containers = rootElement.querySelectorAll(containerSelectors);
-    const searchRoots = containers.length > 0 ? Array.from(containers) : [rootElement];
-
-    // 定義語が含まれる可能性のある要素をさらに絞り込むセレクタ
-    // 条文見出し Article_Caption, articleheading はここで除外される
     const targetSelectors = [
         '[class*="articletitle" i]', '[class*="paragraph" i]', '[class*="item" i]',
         '[class*="sentence" i]', '[class*="portion" i]', '[class*="column" i]',
-        '[class*="list" i]', '[class*="istitle" i]', '[class*="itemtitle" i]'
+        '[class*="list" i]', '[class*="istitle" i]', '[class*="itemtitle" i]',
+        'td', 'th'
     ].join(', ');
-    const rawElements = [];
-    searchRoots.forEach(root => {
-        root.querySelectorAll(targetSelectors).forEach(el => rawElements.push(el));
-    });
+    const rawElements = Array.from(rootElement.querySelectorAll(targetSelectors));
 
     const elementsSet = new Set(rawElements);
     const targetElements = rawElements.filter(el => {
         // 目次内の要素は除外する
-        if (el.closest('[id*="TOC"]')) return false;
+        if (el.closest('[id*="TOC"], #sidebar')) return false;
         // 自身が他の対象要素の子孫であれば除外する
         let parent = el.parentElement;
         while (parent && parent !== document) {
