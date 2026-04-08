@@ -1,15 +1,6 @@
 // config.js
 // 共通のデフォルト設定と設定管理ロジックをまとめたファイル
 // manifest.json と options.html で最初に読み込む必要がある
-
-const DEFAULT_KEYWORD_PROPS = {
-    textColor: "#000000",
-    backgroundColor: "transparent",
-    underlineStyle: "none",
-    underlineColor: "transparent",
-    enabled: true
-};
-
 const DEFAULT_SETTINGS = {
     keywords: {
         highlightInsideBrackets: true,
