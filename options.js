@@ -5,7 +5,13 @@ document.querySelectorAll('.menu-item').forEach(item => {
         document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
         document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
         this.classList.add('active');
-        document.getElementById(this.dataset.target).classList.add('active');
+        const target = document.getElementById(this.dataset.target);
+        target.classList.add('active');
+        
+        // section-advanced に遷移した場合は、現在の UI 状態を JSON エディタに反映する
+        if (this.dataset.target === 'section-advanced') {
+            updateJsonEditorFromUI();
+        }
     });
 });
 
@@ -180,7 +186,7 @@ function updateJsonEditorFromUI() {
 document.getElementById('link-remove-decoration').addEventListener('change', updateJsonEditorFromUI);
 document.getElementById('custom-fullscreen').addEventListener('change', updateJsonEditorFromUI);
 
-// --- 5. UIから設定を収集して保存 ---
+// --- 5. UIから設定を収集 ---
 function gatherSettingsFromUI() {
     return {
         keywords: {
