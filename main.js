@@ -48,7 +48,7 @@ function applyStyleSheet(settings) {
 
 // --- 2. コンテンツの待機と適用 ---
 function waitForContentAndApply(settings) {
-    const containerSelectors = '[class*="mainprovision" i], [class*="preamble" i], [class*="supplprovision" i]';
+    const containerSelectors = '[id*="mainprovision" i], [id*="preamble" i], [class*="supplprovision" i]';
     
     // すでに条文が存在していれば即実行
     if (document.querySelector(containerSelectors)) {
