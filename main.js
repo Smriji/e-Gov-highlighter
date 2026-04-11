@@ -18,8 +18,7 @@ function applyStyleSheet(settings) {
 
     if (settings.custumCss && settings.custumCss.RemoveLinkDecoration) {
         css += `
-            div[class*="paragraph" i] a,
-            div[class*="item" i] a,
+            [class*="sentence" i] a,
             div[class*="articletitle" i] a,
             td a, th a {
                 color: inherit !important;
