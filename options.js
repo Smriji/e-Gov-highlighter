@@ -172,8 +172,8 @@ function loadSettingsToUI(settings) {
     updateColorPickerUI(document.getElementById('def-underline-color-picker'), document.getElementById('def-underline-color'), settings.definitions.underlineColor);
 
     // カスタムCSS
-    document.getElementById('link-remove-decoration').checked = settings.custumCss.RemoveLinkDecoration;
-    document.getElementById('custom-fullscreen').checked = settings.custumCss.FullScreen;
+    document.getElementById('link-remove-decoration').checked = settings.customCss.RemoveLinkDecoration;
+    document.getElementById('custom-fullscreen').checked = settings.customCss.FullScreen;
 }
 
 // 詳細タブのチェックボックス変更時にJSONエディタを更新する関数
@@ -211,11 +211,11 @@ function gatherSettingsFromUI() {
             underlineStyle: document.getElementById('def-underline-style').value,
             underlineColor: document.getElementById('def-underline-color').value
         },
-        custumCss: {
+        customCss: {
             RemoveLinkDecoration: document.getElementById('link-remove-decoration').checked,
             FullScreen: document.getElementById('custom-fullscreen').checked,
             // JSONにしか設定項目がないプロパティは、現在のJSONエディタの値から保持する（安全のためデフォルト値でフォールバック）
-            HideBracketContent: JSON.parse(document.getElementById('json-editor').value).custumCss.HideBracketContent || false
+            HideBracketContent: JSON.parse(document.getElementById('json-editor').value).customCss.HideBracketContent || false
         }
     };
 }

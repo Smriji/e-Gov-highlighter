@@ -30,7 +30,7 @@ const DEFAULT_SETTINGS = {
         underlineStyle: "dashed",
         underlineColor: "#1976D2"
     },
-    custumCss: {
+    customCss: {
         RemoveLinkDecoration: false,
         FullScreen: false,
         HideBracketContent: false
@@ -59,9 +59,9 @@ function mergeSettings(userSettings) {
             ...DEFAULT_SETTINGS.definitions,
             ...(userSettings.definitions || {})
         },
-        custumCss: {
-            ...DEFAULT_SETTINGS.custumCss,
-            ...(userSettings.custumCss || {})
+        customCss: {
+            ...DEFAULT_SETTINGS.customCss,
+            ...(userSettings.customCss || {})
         }
     };
 }

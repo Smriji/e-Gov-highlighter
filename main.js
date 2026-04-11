@@ -16,7 +16,7 @@ function initializeExtension() {
 function applyStyleSheet(settings) {
     let css = '';
 
-    if (settings.custumCss && settings.custumCss.RemoveLinkDecoration) {
+    if (settings.customCss && settings.customCss.RemoveLinkDecoration) {
         css += `
             [class*="sentence" i] a,
             div[class*="articletitle" i] a,
@@ -25,7 +25,7 @@ function applyStyleSheet(settings) {
                 text-decoration: none !important;
             }`;
     }
-    if (settings.custumCss && settings.custumCss.FullScreen) {
+    if (settings.customCss && settings.customCss.FullScreen) {
         css += `
             :root {
                 --bar-height: 0 !important;
@@ -37,7 +37,7 @@ function applyStyleSheet(settings) {
                 margin-left: 0 !important;
             }`;
     }
-    if (settings.custumCss && settings.custumCss.HideBracketContent) {
+    if (settings.customCss && settings.customCss.HideBracketContent) {
         css += `
             .egov-bracket {
                 display: none !important;
