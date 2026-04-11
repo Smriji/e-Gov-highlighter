@@ -5,8 +5,8 @@ function highlightBrackets(rootElement, bracketSettings) {
     // 処理を行う対象のセレクタを定義
     // 条文見出し Article_Caption, articleheading はここで除外される
     const targetSelectors = [
-        '[class*="articletitle" i]', '[class*="paragraph" i]', '[class*="item" i]',
-        '[class*="sentence" i]', '[class*="portion" i]', '[class*="column" i]',
+        '[class*="articletitle" i]', '[class*="sentence" i]', '[class*="item" i]',
+        '[class*="portion" i]', '[class*="column" i]',
         '[class*="list" i]', '[class*="istitle" i]', '[class*="itemtitle" i]',
         'td', 'th'
     ].join(', ');
@@ -14,7 +14,7 @@ function highlightBrackets(rootElement, bracketSettings) {
 
     const elementsSet = new Set(rawElements);
     const targetElements = rawElements.filter(el => {
-        // 目次内の要素は除外する
+        // 目次とサイドバー内の要素は除外する
         if (el.closest('[id*="TOC"], #sidebar')) return false;
         let parent = el.parentElement;
         // 自身が他の対象要素の子孫であれば除外する
