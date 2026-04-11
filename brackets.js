@@ -5,9 +5,8 @@ function highlightBrackets(rootElement, bracketSettings) {
     // 処理を行う対象のセレクタを定義
     // 条文見出し Article_Caption, articleheading はここで除外される
     const targetSelectors = [
-        '[class*="articletitle" i]', '[class*="sentence" i]', '[class*="item" i]',
-        '[class*="portion" i]', '[class*="column" i]',
-        '[class*="list" i]', '[class*="istitle" i]', '[class*="itemtitle" i]',
+        '[class*="articletitle" i]', '[class*="sentence" i]',
+        '[class*="item" i]', '[class*="column" i]',
         'td', 'th'
     ].join(', ');
     const rawElements = Array.from(rootElement.querySelectorAll(targetSelectors));
