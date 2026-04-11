@@ -213,7 +213,9 @@ function gatherSettingsFromUI() {
         },
         custumCss: {
             RemoveLinkDecoration: document.getElementById('link-remove-decoration').checked,
-            FullScreen: document.getElementById('custom-fullscreen').checked
+            FullScreen: document.getElementById('custom-fullscreen').checked,
+            // JSONにしか設定項目がないプロパティは、現在のJSONエディタの値から保持する（安全のためデフォルト値でフォールバック）
+            HideBracketContent: JSON.parse(document.getElementById('json-editor').value).custumCss.HideBracketContent || false
         }
     };
 }

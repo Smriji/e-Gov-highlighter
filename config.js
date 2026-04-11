@@ -32,7 +32,8 @@ const DEFAULT_SETTINGS = {
     },
     custumCss: {
         RemoveLinkDecoration: false,
-        FullScreen: false
+        FullScreen: false,
+        HideBracketContent: false
     }
 };
 

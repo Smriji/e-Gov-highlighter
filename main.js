@@ -38,6 +38,12 @@ function applyStyleSheet(settings) {
                 margin-left: 0 !important;
             }`;
     }
+    if (settings.custumCss && settings.custumCss.HideBracketContent) {
+        css += `
+            .egov-bracket {
+                display: none !important;
+            }`;
+    }
 
     if (css) {
         const style = document.createElement('style');
