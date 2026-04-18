@@ -4,6 +4,8 @@ e-Gov 法令検索 "laws.e-gov.go.jp" の条文を読みやすくするために
 
 長く複雑な条文構成を視覚的に整理し、読解の負担を軽減することを目的としています。
 
+[YouTube 紹介動画](https://youtu.be/bNA5Qy163pY?si=8gtFdPw4Q0qGuB_O)
+
 ## 主な機能
 
 ### キーワードのハイライト
