@@ -54,7 +54,7 @@ function highlightKeywords(rootElement, keywordSettings) {
                     }
 
                     // 各条冒頭の "第○条" という条数部分は処理しない
-                    if (parent.contains('span[style*="font-weight"][style*="bold"]')) {
+                    if (parent.closest('span[style*="font-weight"][style*="bold"]')) {
                         return NodeFilter.FILTER_REJECT;
                     }
                     return NodeFilter.FILTER_ACCEPT;
