@@ -17,7 +17,6 @@ function highlightKeywords(rootElement, keywordSettings) {
     // ハイライトの対象を絞る
     const targetSelectors = [
         '[class*="articletitle" i]', '[class*="sentence" i]',
-        '[class*="item" i]', '[class*="column" i]',
         'td', 'th'
     ].join(', ');
     const rawElements = Array.from(rootElement.querySelectorAll(targetSelectors));
@@ -51,6 +50,11 @@ function highlightKeywords(rootElement, keywordSettings) {
 
                     // 括弧内のハイライトを行わない設定の場合、括弧内のテキストノードをスキップ
                     if (!keywordSettings.highlightInsideBrackets && parent.classList.contains("egov-bracket")) {
+                        return NodeFilter.FILTER_REJECT;
+                    }
+
+                    // 各条冒頭の "第○条" という条数部分は処理しない
+                    if (parent.contains('span[style*="font-weight"][style*="bold"]')) {
                         return NodeFilter.FILTER_REJECT;
                     }
                     return NodeFilter.FILTER_ACCEPT;

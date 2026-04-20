@@ -61,7 +61,6 @@ function highlightDefinitions(rootElement, definitionSettings) {
     // 処理を行う対象のセレクタを定義
     const targetSelectors = [
         '[class*="articletitle" i]', '[class*="sentence" i]',
-        '[class*="item" i]', '[class*="column" i]',
         'td', 'th'
     ].join(', ');
     const rawElements = Array.from(rootElement.querySelectorAll(targetSelectors));
