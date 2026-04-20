@@ -6,7 +6,6 @@ function highlightBrackets(rootElement, bracketSettings) {
     // 条文見出し Article_Caption, articleheading はここで除外される
     const targetSelectors = [
         '[class*="articletitle" i]', '[class*="sentence" i]',
-        '[class*="item" i]', '[class*="column" i]',
         'td', 'th'
     ].join(', ');
     const rawElements = Array.from(rootElement.querySelectorAll(targetSelectors));
