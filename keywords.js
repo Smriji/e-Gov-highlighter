@@ -1,12 +1,11 @@
 function highlightKeywords(rootElement, keywordSettings) {
     if (!keywordSettings || !Array.isArray(keywordSettings.items)) return;
 
-    const activeSettings = keywordSettings.items.filter(setting => setting.enabled && setting.word);
-    if (activeSettings.length === 0) return;
-
     const settingsMap = new Map();
-    activeSettings.forEach(setting => {
-        settingsMap.set(setting.word, setting);
+    keywordSettings.items.forEach((setting, originalIndex) => {
+        if (setting.enabled && setting.word) {
+            settingsMap.set(setting.word, { ...setting, classIndex: originalIndex });
+        }
     });
 
     const sortedWords = Array.from(settingsMap.keys()).sort((a, b) => b.length - a.length);
@@ -88,18 +87,8 @@ function highlightKeywords(rootElement, keywordSettings) {
 
                 // ハイライト用の span タグを作成
                 const span = document.createElement("span");
-                span.className = "egov-highlight";
+                span.className = `egov-highlight egov-highlight-${setting.classIndex}`;
                 span.textContent = word;
-
-                if (setting.textColor) span.style.color = setting.textColor;
-                if (setting.backgroundColor && setting.backgroundColor !== "transparent") span.style.backgroundColor = setting.backgroundColor;
-                if (setting.underlineStyle && setting.underlineStyle !== "none") {
-                    span.style.textDecorationLine = "underline";
-                    span.style.textDecorationStyle = setting.underlineStyle;
-                    if (setting.underlineColor && setting.underlineColor !== "transparent") {
-                        span.style.textDecorationColor = setting.underlineColor;
-                    }
-                }
 
                 fragment.appendChild(span);
                 lastIndex = regex.lastIndex;

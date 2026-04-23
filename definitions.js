@@ -125,16 +125,6 @@ function highlightDefinitions(rootElement, definitionSettings) {
                 span.className = "egov-definition";
                 span.textContent = m[0];
 
-                if (definitionSettings.textColor) span.style.color = definitionSettings.textColor;
-                if (definitionSettings.backgroundColor && definitionSettings.backgroundColor !== "transparent") span.style.backgroundColor = definitionSettings.backgroundColor;
-                if (definitionSettings.underlineStyle && definitionSettings.underlineStyle !== "none") {
-                    span.style.textDecorationLine = "underline";
-                    span.style.textDecorationStyle = definitionSettings.underlineStyle;
-                    if (definitionSettings.underlineColor && definitionSettings.underlineColor !== "transparent") {
-                        span.style.textDecorationColor = definitionSettings.underlineColor;
-                    }
-                }
-
                 fragment.appendChild(span);
                 lastIndex = rx.lastIndex;
             }

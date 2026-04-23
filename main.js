@@ -13,8 +13,67 @@ function initializeExtension() {
     }
 }
 
+function generateHighlightCSS(settings) {
+    let css = '';
+
+    // 括弧ハイライトのスタイル
+    if (settings.brackets && settings.brackets.enabled) {
+        css += '.egov-bracket {';
+        if (settings.brackets.textColor) css += ` color: ${settings.brackets.textColor};`;
+        if (settings.brackets.backgroundColor && settings.brackets.backgroundColor !== "transparent") css += ` background-color: ${settings.brackets.backgroundColor};`;
+        if (settings.brackets.underlineStyle && settings.brackets.underlineStyle !== "none") {
+            css += ' text-decoration-line: underline;';
+            css += ` text-decoration-style: ${settings.brackets.underlineStyle};`;
+            if (settings.brackets.underlineColor && settings.brackets.underlineColor !== "transparent") {
+                css += ` text-decoration-color: ${settings.brackets.underlineColor};`;
+            }
+        }
+        css += ' }\n';
+    }
+
+    // 定義語ハイライトのスタイル
+    if (settings.definitions && settings.definitions.enabled) {
+        css += '.egov-definition {';
+        if (settings.definitions.textColor) css += ` color: ${settings.definitions.textColor};`;
+        if (settings.definitions.backgroundColor && settings.definitions.backgroundColor !== "transparent") css += ` background-color: ${settings.definitions.backgroundColor};`;
+        if (settings.definitions.underlineStyle && settings.definitions.underlineStyle !== "none") {
+            css += ' text-decoration-line: underline;';
+            css += ` text-decoration-style: ${settings.definitions.underlineStyle};`;
+            if (settings.definitions.underlineColor && settings.definitions.underlineColor !== "transparent") {
+                css += ` text-decoration-color: ${settings.definitions.underlineColor};`;
+            }
+        }
+        css += ' }\n';
+    }
+
+    // キーワードハイライトのスタイル（キーワードごとにクラスを生成）
+    if (settings.keywords && Array.isArray(settings.keywords.items)) {
+        settings.keywords.items.forEach((item, index) => {
+            if (item.enabled && item.word) {
+                const className = `egov-highlight-${index}`;
+                css += `.${className} {`;
+                if (item.textColor) css += ` color: ${item.textColor};`;
+                if (item.backgroundColor && item.backgroundColor !== "transparent") css += ` background-color: ${item.backgroundColor};`;
+                if (item.underlineStyle && item.underlineStyle !== "none") {
+                    css += ' text-decoration-line: underline;';
+                    css += ` text-decoration-style: ${item.underlineStyle};`;
+                    if (item.underlineColor && item.underlineColor !== "transparent") {
+                        css += ` text-decoration-color: ${item.underlineColor};`;
+                    }
+                }
+                css += ' }\n';
+            }
+        });
+    }
+
+    return css;
+}
+
 function applyStyleSheet(settings) {
     let css = '';
+
+    // ハイライト用のスタイルを追加
+    css += generateHighlightCSS(settings);
 
     if (settings.customCss && settings.customCss.RemoveLinkDecoration) {
         css += `

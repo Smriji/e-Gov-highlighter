@@ -75,18 +75,8 @@ function highlightBrackets(rootElement, bracketSettings) {
 
             // ナンバリングラベルでない場合のみハイライトを適用する
             if (!isNumberingLabel) {
-                let styleStr = "";
-                if (bracketSettings.textColor) styleStr += `color: ${bracketSettings.textColor}; `;
-                if (bracketSettings.backgroundColor && bracketSettings.backgroundColor !== "transparent") styleStr += `background-color: ${bracketSettings.backgroundColor}; `;
-                if (bracketSettings.underlineStyle && bracketSettings.underlineStyle !== "none") {
-                    styleStr += `text-decoration-line: underline; text-decoration-style: ${bracketSettings.underlineStyle}; `;
-                    if (bracketSettings.underlineColor && bracketSettings.underlineColor !== "transparent") {
-                        styleStr += `text-decoration-color: ${bracketSettings.underlineColor}; `;
-                    }
-                }
-
                 // 見つけた括弧部分を、HTML タグごと span で包む
-                const replacement = `<span class="egov-bracket" style="${styleStr}">${bracketHtml}</span>`;
+                const replacement = `<span class="egov-bracket">${bracketHtml}</span>`;
                 html = html.substring(0, start) + replacement + html.substring(end + 1);
             }
         }
