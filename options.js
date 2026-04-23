@@ -1,4 +1,33 @@
 // options.html において config.js を先に読み込んでおく必要がある
+
+// --- 0. 変更検知機能 ---
+let hasUnsavedChanges = false;
+
+function markAsChanged() {
+    hasUnsavedChanges = true;
+    showUnsavedWarning();
+}
+
+function showUnsavedWarning() {
+    const msg = document.getElementById('global-save-message');
+    if (msg) {
+        msg.textContent = '保存されていない変更があります';
+        msg.style.color = '#ff9800';  // 警告色（オレンジ）
+        msg.style.display = 'block';
+    }
+}
+
+function clearUnsavedWarning() {
+    hasUnsavedChanges = false;
+    const msg = document.getElementById('global-save-message');
+    if (msg) {
+        msg.textContent = '保存しました。';
+        msg.style.color = 'green';
+        msg.style.display = 'block';
+        setTimeout(() => msg.style.display = 'none', 3000);
+    }
+}
+
 // --- 1. タブの切り替え処理 ---
 document.querySelectorAll('.menu-item').forEach(item => {
     item.addEventListener('click', function() {
@@ -21,6 +50,7 @@ function bindColorInputs(pickerElement, textElement, clearButton) {
         textElement.value = e.target.value;
         // ピッカー操作時も念のため input イベントを発火させて同期を確実にする
         textElement.dispatchEvent(new Event('input', { bubbles: true }));
+        markAsChanged();
     });
 
     textElement.addEventListener('input', (e) => {
@@ -28,6 +58,7 @@ function bindColorInputs(pickerElement, textElement, clearButton) {
         if (/^#[0-9A-F]{6}$/i.test(val)) {
             pickerElement.value = val;
         }
+        markAsChanged();
     });
 
     if (clearButton) {
@@ -37,6 +68,7 @@ function bindColorInputs(pickerElement, textElement, clearButton) {
             
             // input を発火させて内部の変数 (kw.backgroundColor 等) を更新
             textElement.dispatchEvent(new Event('input', { bubbles: true }));
+            markAsChanged();
         });
     }
 }
@@ -47,6 +79,15 @@ bindColorInputs(document.getElementById('br-bg-color-picker'), document.getEleme
 bindColorInputs(document.getElementById('def-text-color-picker'), document.getElementById('def-text-color'));
 bindColorInputs(document.getElementById('def-bg-color-picker'), document.getElementById('def-bg-color'), document.getElementById('def-bg-color-clear'));
 bindColorInputs(document.getElementById('def-underline-color-picker'), document.getElementById('def-underline-color'), document.getElementById('def-underline-color-clear'));
+
+// 各チェックボックスにマークAsChanged を追加
+document.getElementById('br-enabled').addEventListener('change', markAsChanged);
+document.getElementById('def-enabled').addEventListener('change', markAsChanged);
+document.getElementById('kw-inside-brackets').addEventListener('change', markAsChanged);
+document.getElementById('def-inside-brackets').addEventListener('change', markAsChanged);
+document.getElementById('def-min-length').addEventListener('input', markAsChanged);
+document.getElementById('def-max-length').addEventListener('input', markAsChanged);
+document.getElementById('def-underline-style').addEventListener('change', markAsChanged);
 
 function updateColorPickerUI(pickerElement, textElement, colorValue) {
     textElement.value = colorValue;
@@ -74,14 +115,20 @@ function renderKeywordList() {
         const enableCheck = document.createElement('input');
         enableCheck.type = 'checkbox';
         enableCheck.checked = kw.enabled;
-        enableCheck.addEventListener('change', (e) => kw.enabled = e.target.checked);
+        enableCheck.addEventListener('change', (e) => {
+            kw.enabled = e.target.checked;
+            markAsChanged();
+        });
 
         // キーワード入力
         const wordInput = document.createElement('input');
         wordInput.type = 'text';
         wordInput.value = kw.word;
         wordInput.style.width = '100px';
-        wordInput.addEventListener('input', (e) => kw.word = e.target.value);
+        wordInput.addEventListener('input', (e) => {
+            kw.word = e.target.value;
+            markAsChanged();
+        });
 
         // 文字色（クリアボタンなし）
         const tcLabel = document.createElement('span');
@@ -96,8 +143,14 @@ function renderKeywordList() {
 
         updateColorPickerUI(tcPicker, tcText, kw.textColor);
         bindColorInputs(tcPicker, tcText);
-        tcText.addEventListener('input', (e) => kw.textColor = e.target.value);
-        tcPicker.addEventListener('input', (e) => kw.textColor = e.target.value);
+        tcText.addEventListener('input', (e) => {
+            kw.textColor = e.target.value;
+            markAsChanged();
+        });
+        tcPicker.addEventListener('input', (e) => {
+            kw.textColor = e.target.value;
+            markAsChanged();
+        });
 
         // 背景色（クリアボタンあり）
         const bgLabel = document.createElement('span');
@@ -123,6 +176,7 @@ function renderKeywordList() {
         // テキストボックスの値が変わった時に内部データ (kw) を更新する
         bgText.addEventListener('input', (e) => {
             kw.backgroundColor = e.target.value;
+            markAsChanged();
         });
 
         // 削除ボタン
@@ -132,6 +186,7 @@ function renderKeywordList() {
         delBtn.addEventListener('click', () => {
             currentKeywords.splice(index, 1);
             renderKeywordList();
+            markAsChanged();
         });
 
         // 結合して追加（tcClear は存在しないため append から外しています）
@@ -143,6 +198,7 @@ function renderKeywordList() {
 document.getElementById('add-keyword-btn').addEventListener('click', () => {
     currentKeywords.push({ word: "", textColor: "#ff0000", backgroundColor: "transparent", underlineStyle: "none", underlineColor: "transparent", enabled: true });
     renderKeywordList();
+    markAsChanged();
 });
 
 
@@ -174,6 +230,9 @@ function loadSettingsToUI(settings) {
     // カスタムCSS
     document.getElementById('link-remove-decoration').checked = settings.customCss.RemoveLinkDecoration;
     document.getElementById('custom-fullscreen').checked = settings.customCss.FullScreen;
+
+    // 変更フラグをリセット
+    hasUnsavedChanges = false;
 }
 
 // 詳細タブのチェックボックス変更時にJSONエディタを更新する関数
@@ -183,8 +242,14 @@ function updateJsonEditorFromUI() {
 }
 
 // 詳細タブのチェックボックスにイベントリスナーを追加
-document.getElementById('link-remove-decoration').addEventListener('change', updateJsonEditorFromUI);
-document.getElementById('custom-fullscreen').addEventListener('change', updateJsonEditorFromUI);
+document.getElementById('link-remove-decoration').addEventListener('change', (e) => {
+    updateJsonEditorFromUI();
+    markAsChanged();
+});
+document.getElementById('custom-fullscreen').addEventListener('change', (e) => {
+    updateJsonEditorFromUI();
+    markAsChanged();
+});
 
 // --- 5. UIから設定を収集 ---
 function gatherSettingsFromUI() {
@@ -287,6 +352,7 @@ function saveSettings(settingsObj) {
     chrome.storage.sync.set({ eGovUserSettings: finalSettings }, () => {
         // 保存成功したら、UI全体を最新の状態で再描画する
         loadSettingsToUI(finalSettings);
+        clearUnsavedWarning();
     });
 }
 
@@ -316,7 +382,6 @@ function performSave() {
 
     // 3. 保存の実行
     saveSettings(settingsToSave);
-    showSaveSuccess();
 }
 
 // サイドバー：変更を保存
@@ -331,7 +396,6 @@ if (document.getElementById('save-json-btn')) {
 function performReset() {
  if (confirm("すべての設定を初期状態（デフォルト）に戻します。よろしいですか？")) {
         saveSettings(DEFAULT_SETTINGS);
-        showSaveSuccess();
     }
 }
 
@@ -349,6 +413,10 @@ document.getElementById('global-discard-btn').addEventListener('click', () => {
         chrome.storage.sync.get(['eGovUserSettings'], function(result) {
             const settings = mergeSettings(result.eGovUserSettings);
             loadSettingsToUI(settings);
+            const msg = document.getElementById('save-message');
+            if (msg) {
+                msg.style.display = 'none';
+            }
         });
     }
 });
@@ -381,4 +449,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const settings = mergeSettings(result.eGovUserSettings);
         loadSettingsToUI(settings);
     });
+    
+    // JSON エディタのリスナーを登録
+    document.getElementById('json-editor').addEventListener('input', markAsChanged);
 });
