@@ -42,7 +42,13 @@ e-Gov 法令検索 "laws.e-gov.go.jp" の条文を読みやすくするために
 
 ## インストール方法
 
-現在、Chrome ウェブストアには公開されていません。以下の手順でローカルから読み込んで使用してください。
+### Chrome ウェブストア
+
+[e-Gov 法令ハイライト](https://chromewebstore.google.com/detail/e-gov-%E6%B3%95%E4%BB%A4%E3%83%8F%E3%82%A4%E3%83%A9%E3%82%A4%E3%83%88/kfgapeefgadbnojpbhdefflcbicjfidl)
+
+### デベロッパーモードの利用
+
+Chrome ウェブストアを使わずに、以下の手順でローカルから読み込んで使用することも可能です。
 
 1. このリポジトリをクローン `git clone https://github.com/Smriji/e-Gov-highlighter.git` するか、必要なファイルをダウンロードして任意のフォルダに展開します。
 
